@@ -1,0 +1,10 @@
+
+DATA_FILE = data.dt
+
+DATA_DIR = data
+
+ROWS_NUMBER = 2
+
+API_PORT = 8000
+
+DB_PORT = 8001

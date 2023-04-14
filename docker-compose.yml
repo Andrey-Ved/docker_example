@@ -1,0 +1,88 @@
+version: '3.9'
+
+services:
+    db:
+        container_name: DB
+        image: db
+
+        build:
+            dockerfile: db.dockerfile
+
+        environment:
+            - DATA_FILE=${DATA_FILE}
+            - DATA_DIR=${DATA_DIR}
+            - DB_PORT=${DB_PORT}
+
+        ports:
+            - "${DB_PORT}:${DB_PORT}"
+
+        networks:
+            - docker_example
+
+        volumes:
+          -  "C:/data:/~/db/data/"  # windows host
+
+        restart: on-failure
+
+    api:
+        container_name: API
+        image: api
+
+        build:
+            dockerfile: api.dockerfile
+
+        environment:
+            - API_PORT=${API_PORT}
+            - DB_PORT=${DB_PORT}
+
+        ports:
+            - "${API_PORT}:${API_PORT}"
+
+        networks:
+            - docker_example
+
+        restart: on-failure
+
+    ui:
+        container_name: UI
+        image: ui
+
+        build:
+            dockerfile: ui.dockerfile
+
+        environment:
+            - ROWS_NUMBER=${ROWS_NUMBER}
+            - API_PORT=${API_PORT}
+
+        networks:
+            - docker_example
+
+networks:
+    docker_example:
+
+# -------------------------------
+# Create and start container:
+# $ export DATA_FILE=<DATA_FILE>
+# $ export DATA_DIR=<DATA_DIR>
+# $ export ROWS_NUMBER=<ROWS_NUMBER>
+# $ export API_PORT=<API_PORT>
+# $ export DB_PORT=<DB_PORT>
+# make sure "c:/data"  is available
+# $ docker-compose up
+# -------------------------------
+# Stop lifted containers:
+# $ docker-compose stop
+# -------------------------------
+# Start stopped containers
+# $ docker-compose start
+# -------------------------------
+# Stop and delete containers and network:
+# $ docker-compose down
+# -------------------------------
+# Remove image:
+# $ docker rmi api
+# $ docker rmi db
+# $ docker rmi ui
+# -------------------------------
+# Clear logs:
+# $ sudo rm -rf logs/*
